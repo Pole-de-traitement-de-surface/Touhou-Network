@@ -12,6 +12,8 @@ var webSocket = new WebSocket(server, database, auth);
 
 server.listen();
 
-
-
-//console.log(process.argv);
+if(process.argv.includes("--install")){
+    setTimeout(function() {
+        process.exit(0)
+    }, 5000);
+}
