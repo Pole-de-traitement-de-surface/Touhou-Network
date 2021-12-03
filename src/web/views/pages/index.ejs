@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('../partials/head'); %>
+  </head>
+  <body>  
+    <header>
+        <%- include('../partials/header'); %>
+    </header>
+
+    <main class="container">
+        <div id="mainAlert" class="alert alert-danger alert-dismissible fade show" role="alert"  style="display: none;"></div>
+        <div class="bg-light p-5 rounded">
+            <h1>Welcome <%= session.user %></h1>
+            <p class="lead">Please select a group or create a new one.</p>
+            <div id="group-list-dropdown" class="dropdown d-inline">
+                <a id="group-list-dropdown-a" class="btn btn-secondary dropdown-toggle disabled" href="#" role="button" id="dropdownGroupListLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    Select a group
+                </a>
+            
+                <ul id="group-list-dropdown-menu" class="dropdown-menu" aria-labelledby="dropdownGroupListLink">
+                    
+                </ul>
+            </div>
+            
+            <button id="button-add-group" type="button" class="d-inline btn btn-success disabled" data-bs-toggle="modal" data-bs-target="#ModalAddNewGroup" onclick="emptyModalGroup();"><i class="fas fa-plus"></i></button>
+        </div>
+        <br>
+        <div id="group-manage" class="bg-light p-5 rounded" style="display: none;">
+            <h1 id="group_name"></h1>
+            <table id="network-table"></table>
+        </div>
+
+        <div id="network-manage" class="bg-light p-5 rounded" style="display: none;">
+            <h1 id="network-name"></h1>
+            <table id="device-table"></table>
+        </div>
+
+        <!-- Modal Group-->
+        <div class="modal fade" id="ModalAddNewGroup" tabindex="-1" aria-labelledby="ModalAddNewGroupLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalAddNewGroupLabel">Add new group</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="ModalAddNewGroupError" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        <div class="mb">
+                            <label for="newGroupInputName" class="form-label">Name: </label>
+                            <input type="text" class="form-control" id="newGroupInputName" placeholder="Name">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <button type="button" class="btn btn-success" onclick="addNewGroup();"><i class="far fa-save"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Network-->
+        <div class="modal fade" id="ModalAddNewNetwork" tabindex="-1" aria-labelledby="ModalAddNewNetworkLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ModalAddNewNetworkLabel">Add new network</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="ModalAddNewNetworkError" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        <div class="mb">
+                            <label for="newNetworkInputName" class="form-label">Name: </label>
+                            <input type="text" class="form-control" id="newNetworkInputName" placeholder="Name">
+                        </div>
+                        <div class="mb">
+                            <label for="newNetworkInputNetwork" class="form-label">Network: </label>
+                            <input type="text" class="form-control" id="newNetworkInputNetwork" placeholder="192.168.0.0">
+                        </div>
+                        <div class="mb">
+                            <label for="newNetworkInputMask" class="form-label">Mask: </label>
+                            <input type="text" class="form-control" id="newNetworkInputMask" placeholder="255.255.255.0">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <button type="button" class="btn btn-success" onclick="addNewNetwork();"><i class="far fa-save"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Device-->
+        <div class="modal fade" id="ModalDevice" tabindex="-1" aria-labelledby="ModalDeviceLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 id="ModalDeviceTitle" class="modal-title" id="ModalDevice">Add new network</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="ModalDeviceError" class="alert alert-danger" role="alert" style="display: none;"></div>
+                        <div class="mb">
+                            <label for="deviceInputName" class="form-label">Name: </label>
+                            <input type="text" class="form-control" id="deviceInputName" placeholder="Name">
+                        </div>
+                        <div class="mb">
+                            <label for="deviceInputIPAddresse" class="form-label">IP Address: </label>
+                            <input type="text" class="form-control" id="deviceInputIPAddresse" placeholder="192.168.0.0" disabled>
+                        </div>
+                        <div class="mb">
+                            <label for="deviceInputMACAddresse" class="form-label">MAC Address: </label>
+                            <input type="text" class="form-control" id="deviceInputMACAddresse" placeholder="AA:BB:CC:DD:EE:FF" maxlength="17">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal"><i class="fas fa-times"></i></button>
+                        <button id="buttonModalDeviceSave" type="button" class="btn btn-success" onclick="modalDeviceSave();"><i class="far fa-save"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function int2ipv4(ipInt) {
+            return ( (ipInt>>>24) +'.' + (ipInt>>16 & 255) +'.' + (ipInt>>8 & 255) +'.' + (ipInt & 255) );
+        }
+
+        function ipv42int(ip){
+            return ip.split('.').reduce(function(ipInt, octet) { return (ipInt<<8) + parseInt(octet, 10)}, 0) >>> 0;
+        }
+
+        var macAddress = document.getElementById("deviceInputMACAddresse");
+
+        function formatTableMAC(value) {
+            var r = /([a-f0-9]{2})([a-f0-9]{2})/i,
+                str = value.replace(/[^a-f0-9]/ig, "");
+
+            while (r.test(str)) {
+                str = str.replace(r, '$1' + ':' + '$2');
+            }
+
+            value = str.slice(0, 17);
+            return value;
+        };
+
+        function formatMAC(e) {
+            var r = /([a-f0-9]{2})([a-f0-9]{2})/i,
+                str = e.target.value.replace(/[^a-f0-9]/ig, "");
+
+            while (r.test(str)) {
+                str = str.replace(r, '$1' + ':' + '$2');
+            }
+
+            e.target.value = str.slice(0, 17);
+        };
+
+        macAddress.addEventListener("keyup", formatMAC, false);
+    </script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+
+        var currentGroup = -1;
+        var currentNetwork = -1;
+        var currentDevice = -1;
+        var currentDeviceIndex = -1;
+
+        var modalAddNewGroup = new bootstrap.Modal($('#ModalAddNewGroup'));
+        var modalAddNewNetwork = new bootstrap.Modal($('#ModalAddNewNetwork'));
+        var modalDevice = new bootstrap.Modal($('#ModalDevice'));
+        
+        const alertCloseButton = '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+
+        function emptyModalGroup(){
+            $("#ModalAddNewGroupError").hide();
+            $("#newGroupInputName").val("");
+        }
+
+        function addNewGroup(){
+            addGroup();
+        }
+
+        /* NETWORK */
+
+        function emptyModalNetwork(){
+            $("#ModalAddNewNetworkError").hide();
+            $("#newNetworkInputName").val("");
+            $("#newNetworkInputNetwork").val("");
+            $("#newNetworkInputMask").val("");
+        }
+
+        function addNewNetwork(){
+            addNetwork();
+        }
+
+        function modalDeviceSave(){
+            editOrAddDevice();
+        }
+
+        function networkActionFormatter(value, row, index) {
+            return [
+                '<a class="text-success" href="javascript:onNetworkSelect(' + value.id + ', \'' + value.name + '\', \'' + value.network + '\', \'' + value.mask + '\')" title="View">',
+                '<i class="fa fa-eye"></i>',
+                '</a>  ',
+                '<a class="text-danger" href="javascript:deleteNetwork(' + value.id + ')" title="Remove">',
+                '<i class="fa fa-trash"></i>',
+                '</a>'
+            ].join('')
+        }
+
+        function deviceActionFormatter(value, row, index) {
+            if(value.set){
+                return [
+                    '<a class="text-success" href="javascript:modalDeviceOpen(' + value.id + ', ' + value.ip + ', ' + value.network + ', ' + index + ')" title="Edit">',
+                    '<i class="fas fa-edit"></i>',
+                    '</a>  ',
+                    '<a class="text-danger" href="javascript:removeDevice(' + value.id + ', ' + value.ip + ')" title="Remove">',
+                    '<i class="fa fa-trash"></i>',
+                    '</a>'
+                ].join('')
+            }else{
+                return [
+                    '<a class="text-success" href="javascript:modalDeviceOpen(' + value.id + ', ' + value.ip + ', ' + value.network + ', ' + index + ')" title="View">',
+                    '<i class="fa fa-plus"></i>',
+                    '</a>'
+                ].join('')
+            }
+        }
+
+        ////// WEBSOCKET ////////
+        /* Network list of group TABLE*/
+        function initGroupTable(group) {
+            table_data = new Array();
+
+            socket.emit('get_network_list', group, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    console.log(ack)
+                    ack.data.forEach(element => {
+                        table_data.push({
+                            id: element.id,
+                            name: element.name,
+                            network: element.network,
+                            mask: element.mask,
+                            action: element
+                        })
+                    });
+
+                    table_data.sort(function(a, b) {
+                        var keyA = new Date(a.id),
+                            keyB = new Date(b.id);
+                        if (keyA < keyB) return -1;
+                        if (keyA > keyB) return 1;
+                        return 0;
+                    });
+
+                    $('#device-table').bootstrapTable('destroy');
+                    $('#network-table').bootstrapTable('destroy').bootstrapTable({
+                        pagination: true,
+                        search: true,
+                        formatLoadingMessage: function() {
+                            return '';
+                        },
+                        columns: [{
+                            field: 'id',
+                            title: 'ID',
+                            searchable: false
+                        }, {
+                            field: 'name',
+                            title: 'Name'
+                        }, {
+                            field: 'network',
+                            title: 'Network'
+                        }, {
+                            field: 'mask',
+                            title: 'Mask',
+                            searchable: false
+                        }, {
+                            field: 'action',
+                            title: 'Action',
+                            formatter: networkActionFormatter,
+                            searchable: false
+                        }],
+                        data: table_data,
+                        buttonsClass: "success",
+                        buttons: {
+                            btnNewNetwork: {
+                                text: 'New network',
+                                icon: 'fa fa-plus',
+                                attributes: {
+                                    title: 'Add new network to current group'
+                                },
+                                event: {
+                                    'click': () => {
+                                        emptyModalNetwork();
+                                        modalAddNewNetwork.show();
+                                    }
+                                }
+                            }
+                        }
+                    })
+                }
+            });
+        }
+
+        /* Device list of network TABLE*/
+        function initNetworkTable(network, network_ip, mask) {
+            table_data = new Array();
+
+            socket.emit('get_device_list', network, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    var mapData = new Map(Object.entries(ack.data));
+                    var block = new Netmask(network_ip + '/' + mask);
+
+                    block.forEach(function(ip, long, index){
+                        if(mapData.has(String(long))){
+                            var ipData = mapData.get(String(long));
+
+                            table_data.push({
+                                name: ipData.name,
+                                ip_address: ip,
+                                mac_address: ipData.mac_address.length == 0 ? null : ipData.mac_address.toUpperCase(),
+                                action: {
+                                    id: ipData.id,
+                                    network: network,
+                                    set: true,
+                                    ip: long
+                                }
+                            })
+                        }else{
+                            table_data.push({
+                                name: "",
+                                ip_address: ip,
+                                mac_address: null,
+                                action: {
+                                    id: null,
+                                    network: network,
+                                    set: false,
+                                    ip: long
+                                }
+                            })
+                        }
+                    });
+                    
+                    table_data.sort(function(a, b) {
+                        var keyA = new Date(a.id),
+                            keyB = new Date(b.id);
+                        if (keyA < keyB) return -1;
+                        if (keyA > keyB) return 1;
+                        return 0;
+                    });
+
+                    $('#network-table').bootstrapTable('destroy');
+                    $('#device-table').bootstrapTable('destroy').bootstrapTable({
+                        pagination: true,
+                        search: true,
+                        uniqueId: 'ip_address',
+                        formatLoadingMessage: function() {
+                            return '';
+                        },
+                        columns: [{
+                            field: 'name',
+                            title: 'Name'
+                        }, {
+                            field: 'ip_address',
+                            title: 'IP addresd'
+                        }, {
+                            field: 'mac_address',
+                            title: 'MAC address'
+                        }, {
+                            field: 'action',
+                            title: 'Action',
+                            formatter: deviceActionFormatter,
+                            searchable: false
+                        }],
+                        data: table_data
+                    })
+                }
+            });
+        }
+
+        /* GROUP MANAGE */
+        function onGroupSelect(id, name){
+            window.history.pushState("<%= head.title %> : " + name, "<%= head.title %> : " + name, "/?group=" + id);
+            document.title = "<%= head.title %> : " + name;
+            $("#network-name").html("");
+            $("#group_name").html(name + ' ' + '<a class="text-danger" href="javascript:deleteGroup(' + id + ')" title="Remove"><i class="fa fa-trash"></i></a>');
+            $("#group-manage").show();
+            $("#network-manage").hide();
+            currentGroup = id;
+            initGroupTable(id);
+        }
+
+        function addGroup(){
+            var name = $("#newGroupInputName").val();
+            socket.emit('add_group', name, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    if(ack.status == 0){
+                        modalAddNewGroup.hide();
+                        $("#group-list-dropdown-menu").append('<li id="dropdown_item_' + ack.data.lastInsertRowid + '"><button class="dropdown-item" type="button" onclick="onGroupSelect(' + ack.data.lastInsertRowid + ', \'' + name + '\');">' + name + '</button></li>');
+                        $("#group-list-dropdown-a").removeClass("disabled");
+                        onGroupSelect(ack.data.lastInsertRowid, name);
+                    }else{
+                        if(ack.error.name == "SqliteError" ){
+                            if(ack.error.message == "UNIQUE constraint failed: group_list.name"){
+                                $("#ModalAddNewGroupError").text("This group name is already used");
+                                $("#ModalAddNewGroupError").show();
+                            }else{
+                                $("#ModalAddNewGroupError").text("Unknown error");
+                                $("#ModalAddNewGroupError").show();
+                            }
+                        }else{
+                            $("#ModalAddNewGroupError").text("Unknown error");
+                            $("#ModalAddNewGroupError").show();
+                        }
+                    }
+                }
+            });
+        }
+
+        function deleteGroup(id){
+            socket.emit('delete_group', id, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    if(ack.status == 0){
+                        $("#group_name").html("");
+                        $("#group-manage").hide();
+                        $('#network-table').bootstrapTable('destroy');
+                        $('#dropdown_item_' + id).remove();
+                        if($("#group-list-dropdown-menu").children().length < 1){
+                            $("#group-list-dropdown-a").removeClass("disabled").addClass("disabled");
+                        }
+                        window.history.pushState("<%= head.title %>", "<%= head.title %>", "/");
+                        document.title = "<%= head.title %>";
+                    }else{   
+                        $("#mainAlert").html(ack.error.name + ': ' + ack.error.message + alertCloseButton);
+                        $("#mainAlert").show();
+                    }
+                }
+            });
+        }
+
+        /* NETWORK MANAGE */
+        function onNetworkSelect(id, name, network, mask){
+            currentNetwork = id;
+            window.history.pushState("<%= head.title %> : " + name, "<%= head.title %> : " + name, "/?network=" + id);
+            document.title = "<%= head.title %> : " + name;
+            $("#group_name").html("");
+            $("#network-name").html(name + ' ' + '<a class="text-danger" href="javascript:deleteNetwork(' + id + ')" title="Remove"><i class="fa fa-trash"></i></a>');
+            $("#group-manage").hide();
+            $("#network-manage").show();
+            currentGroup = id;
+            initNetworkTable(id, network, mask);
+        }
+
+        function addNetwork(){
+            var name = $("#newNetworkInputName").val();
+            var network = $("#newNetworkInputNetwork").val();
+            var mask = $("#newNetworkInputMask").val();
+
+            socket.emit('add_network', name, network, mask, currentGroup, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    if(ack.status == 0){
+                        modalAddNewNetwork.hide();
+                        $('#network-table').bootstrapTable('insertRow', {index: 1, row: {
+                                id: ack.data.lastInsertRowid,
+                                name: name,
+                                network: network,
+                                mask: mask,
+                                action: {
+                                    id:ack.data.lastInsertRowid,
+                                    name: name,
+                                    network: network,
+                                    mask: mask
+                                }
+                            }
+                        });
+                    }else{
+                        if(ack.error.name == "SqliteError" ){
+                            if(ack.error.message == "UNIQUE constraint failed: network_list_ipv4.group_id, network_list_ipv4.name"){
+                                $("#ModalAddNewNetworkError").text("This network name is already used");
+                                $("#ModalAddNewNetworkError").show();
+                            }else{
+                                $("#ModalAddNewNetworkError").text("Unknown error");
+                                $("#ModalAddNewNetworkError").show();
+                            }
+                        }else{
+                            $("#ModalAddNewNetworkError").text("Unknown error");
+                            $("#ModalAddNewNetworkError").show();
+                        }
+                    }
+                }
+            });
+        }
+
+        function deleteNetwork(id){
+            socket.emit('delete_network', id, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    if(ack.status != 0){
+                        $("#mainAlert").html(ack.error.name + ': ' + ack.error.message + alertCloseButton);
+                        $("#mainAlert").show();
+                    }else{
+                        $('#network-table').bootstrapTable('remove', {
+                            field: 'id',
+                            values: [id]
+                        });
+                    }
+                }
+            });
+        }
+
+        /** DEVICE **/
+
+        function modalDeviceOpen(id, ip_address, network_id, index){
+            currentDevice = id;
+            currentDeviceIndex = index;
+
+            $("#ModalDeviceError").hide();
+
+            $("#deviceInputName").val("");
+            $("#deviceInputIPAddresse").val("");
+            $("#deviceInputMACAddresse").val("");
+
+            $("#deviceInputIPAddresse").val(int2ipv4(ip_address));
+
+            if(id != null){
+                $("#ModalDeviceTitle").text("Edit device");
+                $("#deviceInputMACAddresse").prop( "disabled", true);
+                $("#deviceInputName").prop( "disabled", true);
+                $("#buttonModalDeviceSave").prop( "disabled", true);
+                socket.emit('get_device', id, (ack) => {
+                    if(ack == 'unauthorized'){
+                        window.location.href = '/login'; 
+                    }else{
+                        $("#deviceInputName").val(ack.data.name);
+                        $("#deviceInputMACAddresse").val(ack.data.mac_address);
+                        $("#deviceInputMACAddresse").prop( "disabled", false);
+                        $("#deviceInputName").prop( "disabled", false);
+                        $("#buttonModalDeviceSave").prop( "disabled", false);
+                    }
+                });
+            }else{
+                $("#ModalDeviceTitle").text("Add device");
+            }
+
+            modalDevice.show();
+        }
+
+        function editOrAddDevice(){
+            $("#ModalDeviceError").hide();
+            var mac = $("#deviceInputMACAddresse").val();
+
+            if(mac.length != 17 && mac.length != 0){
+                $("#ModalDeviceError").text("Invalid MAC address");
+                $("#ModalDeviceError").show();
+            }else{
+                socket.emit('get_device', currentDevice, (ack) => {
+                    if(ack == 'unauthorized'){
+                        window.location.href = '/login'; 
+                    }else{
+                        if(jQuery.isEmptyObject(ack)){
+                            socket.emit('save_device', currentNetwork, null, $("#deviceInputName").val(), $("#deviceInputIPAddresse").val(), $("#deviceInputMACAddresse").val(),  (ack_2) => {
+                                editOrAddDeviceACK(ack_2)
+                            });
+                        }else{
+                            socket.emit('save_device', currentNetwork, ack.data.id, $("#deviceInputName").val(), int2ipv4(ack.data.ip_address), $("#deviceInputMACAddresse").val(), (ack_2) => {
+                                editOrAddDeviceACK(ack_2)
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+        function removeDevice(id, ip){
+            socket.emit('delete_device', id, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    $('#device-table').bootstrapTable('updateByUniqueId', {id: int2ipv4(ip),  row: {
+                        name: "",
+                        ip_address: int2ipv4(ip),
+                        mac_address: null,
+                        action: {
+                            id: null,
+                            network: currentNetwork,
+                            set: false,
+                            ip: ip
+                        }
+                    }});
+
+                    modalDevice.hide();
+                    currentDevice = -1;
+                }
+            });
+        }
+
+        function editOrAddDeviceACK(ack){
+            if(ack == 'unauthorized'){
+                window.location.href = '/login'; 
+            }else{
+                $('#device-table').bootstrapTable('updateByUniqueId', {id: ack.initialData.ip_address,  row: {
+                    name: ack.initialData.name,
+                    ip_address: ack.initialData.ip_address,
+                    mac_address: ack.initialData.mac_address.length == 0 ? null : ack.initialData.mac_address.toUpperCase(),
+                    action: {
+                        id: ack.data.lastInsertRowid,
+                        network: currentNetwork,
+                        set: true,
+                        ip: ipv42int(ack.initialData.ip_address)
+                    }
+                }});
+
+                modalDevice.hide();
+                currentDevice = -1;
+            }
+        }
+
+        /* INIT */
+        window.addEventListener('SocketInit', function(){
+            $("#group-list-dropdown-a").removeClass("disabled").addClass("disabled");
+            $("#button-add-group").removeClass("disabled").addClass("disabled");
+            socket.emit('get_group_list', null, (ack) => {
+                if(ack == 'unauthorized'){
+                    window.location.href = '/login'; 
+                }else{
+                    $("#group-list-dropdown-menu").empty();
+                    group_list = ack.data;
+                    ack.data.forEach(element => {
+                        $("#group-list-dropdown-menu").append('<li id="dropdown_item_' + element.id + '><button class="dropdown-item" type="button" onclick="onGroupSelect(' + element.id + ', \'' + element.name + '\');">' + element.name + '</button></li>');
+                    });
+
+                    if($("#group-list-dropdown-menu").children().length > 0){
+                            $("#group-list-dropdown-a").removeClass("disabled");
+                    }
+                    $("#button-add-group").removeClass("disabled");
+
+                    group = group_list.find(element => element.id == urlParams.get('group'));
+                    var network = urlParams.get('network');
+
+                    if(group != undefined){
+                        onGroupSelect(group.id, group.name);
+                    }else if(network != null && !isNaN(network)){
+                        socket.emit('get_network', network, (ack) => {
+                            if(ack == 'unauthorized'){
+                                window.location.href = '/login'; 
+                            }else{
+                                if(ack.status == 0){
+                                    onNetworkSelect(network, ack.data.name, ack.data.network, ack.data.mask);
+                                }else{
+                                    window.history.pushState("<%= head.title %>", "<%= head.title %>", "/");
+                                    document.title = "<%= head.title %>";
+                                }
+                            }
+                        });
+                    }else{
+                        window.history.pushState("<%= head.title %>", "<%= head.title %>", "/");
+                        document.title = "<%= head.title %>";
+                    }
+                }
+            });
+        });
+    </script>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+    
+    
+
+    </body>
+</html>

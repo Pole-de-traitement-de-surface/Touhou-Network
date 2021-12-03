@@ -1,0 +1,33 @@
+SERVER:
+  port: 8081
+  SESSION:
+    cookie:
+      maxAge: 86400000
+    store:
+      type: SQLITE
+      checkPeriod: 86400000
+      expired:
+        clear: true
+        intervalMs: 900000
+    resave: false
+    secret: "AZERTYUIOP"
+
+DATABASE:
+  type: SQLITE
+  host: null
+  port: null
+  username: null
+  password: null
+  database: bdd.sqlite
+
+LDAP_AUTH:
+  enable: true
+  url: ldap://exemple.local
+  baseDN: DC=exemple,DC=local
+  username: admin@exemple.local
+  password: admin
+  group: Touhou Network Group
+
+CREDENTIAL:
+  username: admin
+  password: admin

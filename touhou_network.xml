@@ -1,0 +1,10 @@
+<service>
+    <id>touhou_network</id>
+    <name>Touhou Network Server Application</name>
+    <description>Open-source Network Manager</description>
+    <workingdirectory>%BASE%\conf</workingdirectory>
+    <logpath>%BASE%\logs</logpath>
+    <logmode>rotate</logmode>
+    <executable>node</executable>
+    <startargument>%BASE%\src\main.js</startargument>
+</service>

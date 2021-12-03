@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('../partials/head'); %>
+
+        <link href="/webgallery/css/login.css" rel="stylesheet">
+    </head>
+
+    <body class="text-center">
+        <form id="login_form" class="form-signin">
+            <img class="mb-4" src="./webgallery/image/logo.png" alt="" width="256" height="173">
+            <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+            <label for="inputUsername" class="sr-only">Username</label>
+            <input type="text" id="inputUsername" class="form-control" placeholder="Username" required="" autofocus="">
+            <label for="inputPassword" class="sr-only">Password</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required="">
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+  
+        <footer>
+            <%- include('../partials/footer'); %>
+        </footer>
+
+        <script>
+            $(function() {
+                $('#login_form').on('submit', function(e) {
+                    e.preventDefault();
+                    socket_auth($('#inputUsername').val(), $('#inputPassword').val(), (callback) => {
+                        if(callback.status){
+                            window.location.href = '/'; 
+                        }else{
+                            
+                        }
+                    })
+                });
+            });
+        </script>
+        
+    
+    </body>
+</html>
