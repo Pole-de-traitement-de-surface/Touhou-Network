@@ -18,6 +18,10 @@ SET BASE=%~dp0
 
 PUSHD "%BASE%\conf"
 
+cd %BASE%\src
+npm install
+cd %BASE%
+
 node "%BASE%\src\main.js" --install
 
 if errorlevel 1 (
