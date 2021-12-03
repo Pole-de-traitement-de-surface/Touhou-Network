@@ -18,10 +18,6 @@ SET BASE=%~dp0
 
 PUSHD "%BASE%\conf"
 
-cd %BASE%\src
-npm install
-cd %BASE%
-
 node "%BASE%\src\main.js" --install
 
 if errorlevel 1 (
@@ -31,7 +27,7 @@ if errorlevel 1 (
 )
 POPD
 
-::"%BASE%"touhou_network.exe install
+"%BASE%"touhou_network.exe install
 
 @ECHO Touhou Network installed successfully!
 
